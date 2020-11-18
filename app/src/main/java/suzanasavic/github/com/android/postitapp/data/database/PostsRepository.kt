@@ -1,6 +1,7 @@
 package suzanasavic.github.com.android.postitapp.data.database
 
 import android.app.Application
+import androidx.lifecycle.LiveData
 import suzanasavic.github.com.android.postitapp.data.entities.Post
 
 /**
@@ -18,4 +19,10 @@ class PostsRepository(applicationContext: Application) : BaseRepository {
     override fun addNewPosts(post: ArrayList<Post>) {
         return postsDao.addNewPosts(post)
     }
+
+    override fun getAllPosts(): LiveData<List<Post>> {
+        return postsDao.getAllPosts()
+    }
+
+
 }

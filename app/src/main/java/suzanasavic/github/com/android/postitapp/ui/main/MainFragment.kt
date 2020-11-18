@@ -7,7 +7,10 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -24,24 +27,34 @@ class MainFragment : Fragment() {
         fun newInstance() = MainFragment()
     }
 
+    private lateinit var recyclerView: RecyclerView
     private lateinit var posts: ArrayList<Post>
     private lateinit var viewModel: MainViewModel
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View {
-        return inflater.inflate(R.layout.main_fragment, container, false)
+        val root =inflater.inflate(R.layout.main_fragment, container, false)
+        recyclerView = root.findViewById(R.id.recyclerView)
+        return root
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
         val app = App.instance
+        viewModel = ViewModelProvider(this, MainViewModelModelFactory(app)).get(MainViewModel::class.java)
+        viewModel.getAllPosts().observe(viewLifecycleOwner, androidx.lifecycle.Observer { postList ->
+            recyclerView.also {
+                it.layoutManager = LinearLayoutManager(requireContext())
+                it.setHasFixedSize(true)
+                it.adapter = PostListAdapter(postList)
+            }
+        })
 
-        lifecycleScope.launch { // coroutine on Main
+        /*lifecycleScope.launch { // coroutine on Main
             posts = GetPostsRepository().getPosts()
             val repository = PostsRepository(app)
             repository.addNewPosts(posts)
-        }
+        }*/
     }
 
 }

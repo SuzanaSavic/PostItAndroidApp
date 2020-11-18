@@ -1,5 +1,6 @@
 package suzanasavic.github.com.android.postitapp.data.database
 
+import androidx.lifecycle.LiveData
 import suzanasavic.github.com.android.postitapp.data.entities.Post
 
 /**
@@ -7,4 +8,5 @@ import suzanasavic.github.com.android.postitapp.data.entities.Post
  */
 interface BaseRepository {
     fun addNewPosts(post: ArrayList<Post>)
+    fun getAllPosts() : LiveData<List<Post>>
 }
