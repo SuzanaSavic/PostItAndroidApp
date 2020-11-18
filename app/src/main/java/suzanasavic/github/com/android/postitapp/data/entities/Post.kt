@@ -1,15 +1,31 @@
 package suzanasavic.github.com.android.postitapp.data.entities
 
 
+import androidx.room.ColumnInfo
+import androidx.room.Dao
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 import com.google.gson.annotations.SerializedName
+import suzanasavic.github.com.android.postitapp.Constants.Companion.BODY
+import suzanasavic.github.com.android.postitapp.Constants.Companion.ID
+import suzanasavic.github.com.android.postitapp.Constants.Companion.TABLE_NAME
+import suzanasavic.github.com.android.postitapp.Constants.Companion.TITLE
+import suzanasavic.github.com.android.postitapp.Constants.Companion.USER_ID
 
+@Dao
+@Entity(tableName = TABLE_NAME)
 data class Post(
-    @SerializedName("body")
+    @ColumnInfo(name = BODY)
+    @SerializedName(BODY)
     val body: String,
-    @SerializedName("id")
+    @PrimaryKey
+    @ColumnInfo(name = ID)
+    @SerializedName(ID)
     val id: Int,
-    @SerializedName("title")
+    @ColumnInfo(name = TITLE)
+    @SerializedName(TITLE)
     val title: String,
-    @SerializedName("userId")
+    @ColumnInfo(name = USER_ID)
+    @SerializedName(USER_ID)
     val userId: Int
 )

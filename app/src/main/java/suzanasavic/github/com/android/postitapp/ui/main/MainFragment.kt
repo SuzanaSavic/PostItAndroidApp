@@ -7,12 +7,16 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import suzanasavic.github.com.android.postitapp.App
 import suzanasavic.github.com.android.postitapp.R
+import suzanasavic.github.com.android.postitapp.data.database.PostsRepository
 import suzanasavic.github.com.android.postitapp.data.entities.Post
 import suzanasavic.github.com.android.postitapp.data.network.GetPostsRepository
+import java.util.ArrayList
 
 class MainFragment : Fragment() {
 
@@ -20,6 +24,7 @@ class MainFragment : Fragment() {
         fun newInstance() = MainFragment()
     }
 
+    private lateinit var posts: ArrayList<Post>
     private lateinit var viewModel: MainViewModel
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -30,9 +35,12 @@ class MainFragment : Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
-        GlobalScope.launch(Dispatchers.Main) {
-            val posts: ArrayList<Post> = GetPostsRepository().getPosts()
-            Log.d("posts", posts.size.toString())
+        val app = App.instance
+
+        lifecycleScope.launch { // coroutine on Main
+            posts = GetPostsRepository().getPosts()
+            val repository = PostsRepository(app)
+            repository.addNewPosts(posts)
         }
     }
 
