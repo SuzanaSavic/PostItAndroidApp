@@ -1,10 +1,7 @@
 package suzanasavic.github.com.android.postitapp.data.database
 
 import androidx.lifecycle.LiveData
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
-import androidx.room.Query
+import androidx.room.*
 import suzanasavic.github.com.android.postitapp.data.entities.Post
 
 /**
@@ -19,4 +16,7 @@ interface PostsDao {
 
     @Query("SELECT * FROM posts")
     fun getAllPosts(): LiveData<List<Post>>
+
+    @Query("DELETE FROM posts")
+    fun deleteAll()
 }

@@ -24,5 +24,9 @@ class PostsRepository(applicationContext: Application) : BaseRepository {
         return postsDao.getAllPosts()
     }
 
+    override fun deleteAllPosts(){
+        return postsDao.deleteAll()
+    }
+
 
 }

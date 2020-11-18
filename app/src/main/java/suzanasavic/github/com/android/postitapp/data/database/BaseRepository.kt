@@ -9,4 +9,5 @@ import suzanasavic.github.com.android.postitapp.data.entities.Post
 interface BaseRepository {
     fun addNewPosts(post: ArrayList<Post>)
     fun getAllPosts() : LiveData<List<Post>>
+    fun deleteAllPosts()
 }

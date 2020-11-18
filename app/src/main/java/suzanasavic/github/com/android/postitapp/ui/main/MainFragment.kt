@@ -1,5 +1,6 @@
 package suzanasavic.github.com.android.postitapp.ui.main
 
+import android.content.res.Configuration
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
 import android.util.Log
@@ -11,6 +12,7 @@ import android.widget.TextView
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -30,11 +32,13 @@ class MainFragment : Fragment() {
     private lateinit var recyclerView: RecyclerView
     private lateinit var posts: ArrayList<Post>
     private lateinit var viewModel: MainViewModel
+    private lateinit var swipeToRefresh: SwipeRefreshLayout
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View {
         val root =inflater.inflate(R.layout.main_fragment, container, false)
         recyclerView = root.findViewById(R.id.recyclerView)
+        swipeToRefresh = root.findViewById(R.id.swipeToRefresh)
         return root
     }
 
@@ -43,18 +47,27 @@ class MainFragment : Fragment() {
         val app = App.instance
         viewModel = ViewModelProvider(this, MainViewModelModelFactory(app)).get(MainViewModel::class.java)
         viewModel.getAllPosts().observe(viewLifecycleOwner, androidx.lifecycle.Observer { postList ->
-            recyclerView.also {
-                it.layoutManager = LinearLayoutManager(requireContext())
-                it.setHasFixedSize(true)
-                it.adapter = PostListAdapter(postList)
+
+            //check if database is empty
+            //it it is empty make call and fetch new data
+            if(postList.isEmpty()){
+                lifecycleScope.launch {
+                    viewModel.fetchAllPosts()
+                    //set time for 5 minutes and delete data
+                    //set flag to know if
+                }
+            }else {
+                recyclerView.also {
+                    it.layoutManager = LinearLayoutManager(requireContext())
+                    it.setHasFixedSize(true)
+                    it.adapter = PostListAdapter(requireContext(), postList)
+                    swipeToRefresh.isRefreshing = false
+                }
             }
         })
 
-        /*lifecycleScope.launch { // coroutine on Main
-            posts = GetPostsRepository().getPosts()
-            val repository = PostsRepository(app)
-            repository.addNewPosts(posts)
-        }*/
+        swipeToRefresh.setOnRefreshListener{
+            viewModel.deleteAllDataFromDatabase()
+        }
     }
-
 }

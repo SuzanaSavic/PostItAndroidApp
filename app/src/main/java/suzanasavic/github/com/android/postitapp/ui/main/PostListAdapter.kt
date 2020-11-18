@@ -1,7 +1,11 @@
 package suzanasavic.github.com.android.postitapp.ui.main
 
+import android.content.Context
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
+import android.view.animation.Animation
+import android.view.animation.AnimationUtils
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
 import suzanasavic.github.com.android.postitapp.R
@@ -11,9 +15,13 @@ import suzanasavic.github.com.android.postitapp.databinding.RecyclerviewPostItem
 /**
  * Created by suzana.savic on 11/18/2020.
  */
-class PostListAdapter (private val postList: List<Post>) : RecyclerView.Adapter<PostListAdapter.PostListViewHolder>(){
+class PostListAdapter(private val context: Context, private val postList: List<Post>) : RecyclerView.Adapter<PostListAdapter.PostListViewHolder>(){
 
-    inner class PostListViewHolder(val recyclerViewPostListItemBinding: RecyclerviewPostItemBinding) : RecyclerView.ViewHolder(recyclerViewPostListItemBinding.root)
+    private var lastPosition = -1
+
+    inner class PostListViewHolder(val recyclerViewPostListItemBinding: RecyclerviewPostItemBinding) : RecyclerView.ViewHolder(
+        recyclerViewPostListItemBinding.root
+    )
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int)= PostListViewHolder(
         DataBindingUtil.inflate(
@@ -26,7 +34,18 @@ class PostListAdapter (private val postList: List<Post>) : RecyclerView.Adapter<
 
     override fun onBindViewHolder(holder: PostListViewHolder, position: Int) {
         holder.recyclerViewPostListItemBinding.post = postList[position]
+        setAnimation(holder.itemView, position)
     }
 
     override fun getItemCount(): Int = postList.size
+
+    private fun setAnimation(viewToAnimate: View, position: Int) {
+        // If the bound view wasn't previously displayed on screen, it's animated
+        if (position > lastPosition) {
+            val animation: Animation =
+                AnimationUtils.loadAnimation(context, android.R.anim.fade_in)
+            viewToAnimate.startAnimation(animation)
+            lastPosition = position
+        }
+    }
 }
