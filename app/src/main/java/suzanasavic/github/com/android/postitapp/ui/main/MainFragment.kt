@@ -49,19 +49,27 @@ class MainFragment : Fragment() {
         viewModel.getAllPosts().observe(
             viewLifecycleOwner, { postList ->
                 if (postList.isEmpty()) {
-                    //if postList is empty that means that br deleted database or user swiped to refresh
-                    //defaultValude will tell us that
                     val defaultValue = context?.getSharedPreferences(
                         context!!.getString(R.string.preference_file_key),
                         Context.MODE_PRIVATE)?.getBoolean(FIVE_MINUTES, false)
-                    if(!defaultValue!!) {
+
+                   /*** In task description it is sad:  Posts should be stored locally with a validity time of 5 minutes.
+                    I assume that after 5 minutes app need to fetch new data
+                    And that is how app works now
+                    But if after 5 minutes app needs to delete data and wait for user to swipe to fetch new data you just need to uncomment code below :)
+                    And comment 72. line.
+                    It will work smoothly**/
+
+                   /* if(!defaultValue!!) {
                         //if user swiped on already deleted postList fetch data
                        fetchPostsAndSetAlarm()
-                    }else{
+                    }
+                    else{
                         context?.getSharedPreferences(context?.getString(R.string.preference_file_key),
                             Context.MODE_PRIVATE)?.edit()?.putBoolean(FIVE_MINUTES, false)?.apply()
                        setupRecyclerView(postList)
-                    }
+                    }*/
+                    fetchPostsAndSetAlarm()
                 } else {
                     setupRecyclerView(postList)
                 }
@@ -79,9 +87,8 @@ class MainFragment : Fragment() {
             viewModel.fetchAllPosts()
             val calendar = Calendar.getInstance()
             calendar.time = Date()
-            calendar.add(Calendar.MINUTE, 5)
+            calendar.add(Calendar.SECOND, 5)
             startAlarm(calendar)
-
         }
     }
 
