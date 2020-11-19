@@ -1,41 +1,41 @@
 package suzanasavic.github.com.android.postitapp.ui.main
 
-import android.content.res.Configuration
-import androidx.lifecycle.ViewModelProvider
+import android.app.AlarmManager
+import android.app.PendingIntent
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
-import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import suzanasavic.github.com.android.postitapp.App
+import suzanasavic.github.com.android.postitapp.Constants.Companion.FIVE_MINUTES
+import suzanasavic.github.com.android.postitapp.FiveMinutesBroadcastReceiver
 import suzanasavic.github.com.android.postitapp.R
-import suzanasavic.github.com.android.postitapp.data.database.PostsRepository
 import suzanasavic.github.com.android.postitapp.data.entities.Post
-import suzanasavic.github.com.android.postitapp.data.network.GetPostsRepository
-import java.util.ArrayList
+import java.util.*
 
 class MainFragment : Fragment() {
 
     companion object {
         fun newInstance() = MainFragment()
     }
-
     private lateinit var recyclerView: RecyclerView
-    private lateinit var posts: ArrayList<Post>
     private lateinit var viewModel: MainViewModel
     private lateinit var swipeToRefresh: SwipeRefreshLayout
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View {
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
         val root =inflater.inflate(R.layout.main_fragment, container, false)
         recyclerView = root.findViewById(R.id.recyclerView)
         swipeToRefresh = root.findViewById(R.id.swipeToRefresh)
@@ -46,28 +46,58 @@ class MainFragment : Fragment() {
         super.onActivityCreated(savedInstanceState)
         val app = App.instance
         viewModel = ViewModelProvider(this, MainViewModelModelFactory(app)).get(MainViewModel::class.java)
-        viewModel.getAllPosts().observe(viewLifecycleOwner, androidx.lifecycle.Observer { postList ->
-
-            //check if database is empty
-            //it it is empty make call and fetch new data
-            if(postList.isEmpty()){
-                lifecycleScope.launch {
-                    viewModel.fetchAllPosts()
-                    //set time for 5 minutes and delete data
-                    //set flag to know if
+        viewModel.getAllPosts().observe(
+            viewLifecycleOwner, { postList ->
+                if (postList.isEmpty()) {
+                    //if postList is empty that means that br deleted database or user swiped to refresh
+                    //defaultValude will tell us that
+                    val defaultValue = context?.getSharedPreferences(
+                        context!!.getString(R.string.preference_file_key),
+                        Context.MODE_PRIVATE)?.getBoolean(FIVE_MINUTES, false)
+                    if(!defaultValue!!) {
+                        //if user swiped on already deleted postList fetch data
+                       fetchPostsAndSetAlarm()
+                    }else{
+                        context?.getSharedPreferences(context?.getString(R.string.preference_file_key),
+                            Context.MODE_PRIVATE)?.edit()?.putBoolean(FIVE_MINUTES, false)?.apply()
+                       setupRecyclerView(postList)
+                    }
+                } else {
+                    setupRecyclerView(postList)
                 }
-            }else {
-                recyclerView.also {
-                    it.layoutManager = LinearLayoutManager(requireContext())
-                    it.setHasFixedSize(true)
-                    it.adapter = PostListAdapter(requireContext(), postList)
-                    swipeToRefresh.isRefreshing = false
-                }
-            }
-        })
+            })
 
         swipeToRefresh.setOnRefreshListener{
-            viewModel.deleteAllDataFromDatabase()
+            if(!viewModel.refreshPosts()){
+                fetchPostsAndSetAlarm()
+            }
         }
+    }
+
+    private fun fetchPostsAndSetAlarm() {
+        lifecycleScope.launch {
+            viewModel.fetchAllPosts()
+            val calendar = Calendar.getInstance()
+            calendar.time = Date()
+            calendar.add(Calendar.MINUTE, 5)
+            startAlarm(calendar)
+
+        }
+    }
+
+    private fun setupRecyclerView(postList: List<Post>) {
+        recyclerView.also {
+            it.layoutManager = LinearLayoutManager(requireContext())
+            it.setHasFixedSize(true)
+            it.adapter = PostListAdapter(requireContext(), postList)
+            swipeToRefresh.isRefreshing = false
+        }
+    }
+
+    private fun startAlarm(calendar: Calendar) {
+        val alarmManager = context?.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        val intent = Intent(context, FiveMinutesBroadcastReceiver::class.java)
+        val pendingIntent = PendingIntent.getBroadcast(context, 0, intent, 0)
+        alarmManager.setExact(AlarmManager.RTC_WAKEUP, calendar.timeInMillis, pendingIntent)
     }
 }
