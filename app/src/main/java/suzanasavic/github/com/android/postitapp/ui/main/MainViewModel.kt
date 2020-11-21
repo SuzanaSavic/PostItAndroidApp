@@ -18,6 +18,10 @@ class MainViewModel(application: Application) : ViewModel() {
     private val repository: PostsRepository = PostsRepository(application)
     private lateinit var liveDataPosts: LiveData<List<Post>>
 
+    init {
+        liveDataPosts = getAllPosts()
+    }
+
     fun getAllPosts() : LiveData<List<Post>> {
         liveDataPosts = repository.getAllPosts()
         return liveDataPosts

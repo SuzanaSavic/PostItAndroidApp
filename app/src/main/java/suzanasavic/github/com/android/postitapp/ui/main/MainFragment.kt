@@ -87,7 +87,7 @@ class MainFragment : Fragment() {
             viewModel.fetchAllPosts()
             val calendar = Calendar.getInstance()
             calendar.time = Date()
-            calendar.add(Calendar.SECOND, 5)
+            calendar.add(Calendar.MINUTE, 5)
             startAlarm(calendar)
         }
     }
