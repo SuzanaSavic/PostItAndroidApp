@@ -23,7 +23,7 @@ import suzanasavic.github.com.android.postitapp.R
 import suzanasavic.github.com.android.postitapp.data.entities.Post
 import java.util.*
 
-class MainFragment : Fragment() {
+class MainFragment : Fragment(), PostListAdapter.PostItemClickListener {
 
     companion object {
         fun newInstance() = MainFragment()
@@ -96,7 +96,7 @@ class MainFragment : Fragment() {
         recyclerView.also {
             it.layoutManager = LinearLayoutManager(requireContext())
             it.setHasFixedSize(true)
-            it.adapter = PostListAdapter(requireContext(), postList)
+            it.adapter = PostListAdapter(requireContext(), postList, this)
             swipeToRefresh.isRefreshing = false
         }
     }
@@ -106,5 +106,9 @@ class MainFragment : Fragment() {
         val intent = Intent(context, FiveMinutesBroadcastReceiver::class.java)
         val pendingIntent = PendingIntent.getBroadcast(context, 0, intent, 0)
         alarmManager.setExact(AlarmManager.RTC_WAKEUP, calendar.timeInMillis, pendingIntent)
+    }
+
+    override fun onPostItemClicked(post: Post) {
+        //todo navigate to fragment and fetch data
     }
 }

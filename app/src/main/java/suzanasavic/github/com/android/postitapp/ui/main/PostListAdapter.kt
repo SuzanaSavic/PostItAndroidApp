@@ -15,7 +15,7 @@ import suzanasavic.github.com.android.postitapp.databinding.RecyclerviewPostItem
 /**
  * Created by suzana.savic on 11/18/2020.
  */
-class PostListAdapter(private val context: Context, private val postList: List<Post>) : RecyclerView.Adapter<PostListAdapter.PostListViewHolder>(){
+class PostListAdapter(private val context: Context, private val postList: List<Post>, private val postItemClickListener : PostItemClickListener) : RecyclerView.Adapter<PostListAdapter.PostListViewHolder>(){
 
     private var lastPosition = -1
 
@@ -35,6 +35,9 @@ class PostListAdapter(private val context: Context, private val postList: List<P
     override fun onBindViewHolder(holder: PostListViewHolder, position: Int) {
         holder.recyclerViewPostListItemBinding.post = postList[position]
         setAnimation(holder.itemView, position)
+        holder.itemView.setOnClickListener {
+            postItemClickListener.onPostItemClicked(postList[position])
+        }
     }
 
     override fun getItemCount(): Int = postList.size
@@ -47,5 +50,9 @@ class PostListAdapter(private val context: Context, private val postList: List<P
             viewToAnimate.startAnimation(animation)
             lastPosition = position
         }
+    }
+
+    interface PostItemClickListener {
+        fun onPostItemClicked(post: Post)
     }
 }
