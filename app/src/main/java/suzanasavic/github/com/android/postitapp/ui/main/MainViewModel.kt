@@ -1,21 +1,19 @@
 package suzanasavic.github.com.android.postitapp.ui.main
 
 import android.app.Application
-import androidx.arch.core.util.Function
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
-import suzanasavic.github.com.android.postitapp.data.database.PostsRepository
+import suzanasavic.github.com.android.postitapp.data.database.DatabasePostsRepository
 import suzanasavic.github.com.android.postitapp.data.entities.Post
-import suzanasavic.github.com.android.postitapp.data.network.GetPostsRepository
+import suzanasavic.github.com.android.postitapp.data.network.ApiPostsRepository
 import java.util.*
 
 
 class MainViewModel(application: Application) : ViewModel() {
 
     private lateinit var posts: ArrayList<Post>
-    private val repository: PostsRepository = PostsRepository(application)
+    private val repository: DatabasePostsRepository = DatabasePostsRepository(application)
     private lateinit var liveDataPosts: LiveData<List<Post>>
 
     init {
@@ -28,7 +26,7 @@ class MainViewModel(application: Application) : ViewModel() {
     }
 
     suspend fun fetchAllPosts() {
-        posts = GetPostsRepository().getPosts()
+        posts = ApiPostsRepository().getPosts()
         repository.addNewPosts(posts)
     }
 

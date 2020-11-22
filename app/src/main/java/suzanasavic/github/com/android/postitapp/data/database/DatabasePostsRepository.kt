@@ -7,7 +7,7 @@ import suzanasavic.github.com.android.postitapp.data.entities.Post
 /**
  * Created by suzana.savic on 11/17/2020.
  */
-class PostsRepository(applicationContext: Application) : BaseRepository {
+class DatabasePostsRepository(applicationContext: Application) : BaseRepository {
 
     private var postsDao: PostsDao
 
