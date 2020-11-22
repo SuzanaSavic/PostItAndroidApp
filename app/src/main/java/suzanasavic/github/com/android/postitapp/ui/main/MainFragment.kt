@@ -15,12 +15,14 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.launch
 import suzanasavic.github.com.android.postitapp.App
 import suzanasavic.github.com.android.postitapp.Constants.Companion.FIVE_MINUTES
 import suzanasavic.github.com.android.postitapp.FiveMinutesBroadcastReceiver
 import suzanasavic.github.com.android.postitapp.R
 import suzanasavic.github.com.android.postitapp.data.entities.Post
+import java.lang.Exception
 import java.util.*
 
 class MainFragment : Fragment(), PostListAdapter.PostItemClickListener {
@@ -28,6 +30,8 @@ class MainFragment : Fragment(), PostListAdapter.PostItemClickListener {
     companion object {
         fun newInstance() = MainFragment()
     }
+
+    private lateinit var main: View
     private lateinit var recyclerView: RecyclerView
     private lateinit var viewModel: MainViewModel
     private lateinit var swipeToRefresh: SwipeRefreshLayout
@@ -36,9 +40,10 @@ class MainFragment : Fragment(), PostListAdapter.PostItemClickListener {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val root =inflater.inflate(R.layout.main_fragment, container, false)
+        val root = inflater.inflate(R.layout.main_fragment, container, false)
         recyclerView = root.findViewById(R.id.recyclerView)
         swipeToRefresh = root.findViewById(R.id.swipeToRefresh)
+        main = root.findViewById(R.id.main)
         return root
     }
 
@@ -84,11 +89,16 @@ class MainFragment : Fragment(), PostListAdapter.PostItemClickListener {
 
     private fun fetchPostsAndSetAlarm() {
         lifecycleScope.launch {
-            viewModel.fetchAllPosts()
-            val calendar = Calendar.getInstance()
-            calendar.time = Date()
-            calendar.add(Calendar.MINUTE, 5)
-            startAlarm(calendar)
+            try {
+                viewModel.fetchAllPosts()
+                val calendar = Calendar.getInstance()
+                calendar.time = Date()
+                calendar.add(Calendar.MINUTE, 5)
+                startAlarm(calendar)
+            }catch (e: Exception){
+                Snackbar.make(main, getString(R.string.general_error_message), Snackbar.LENGTH_LONG).show()
+                swipeToRefresh.isRefreshing = false
+            }
         }
     }
 

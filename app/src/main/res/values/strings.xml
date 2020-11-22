@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">PostIt</string>
     <string name="preference_file_key">suzanasavic.github.com.android.postit.PREFERENCE_FILE_KEY</string>
+    <string name="general_error_message">Error occurred.</string>
 </resources>
