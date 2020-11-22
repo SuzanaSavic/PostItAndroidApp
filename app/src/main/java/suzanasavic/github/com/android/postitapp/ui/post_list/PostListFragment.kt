@@ -1,8 +1,7 @@
-package suzanasavic.github.com.android.postitapp.ui.main
+package suzanasavic.github.com.android.postitapp.ui.post_list
 
 import android.app.AlarmManager
 import android.app.PendingIntent
-import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -12,6 +11,8 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.findNavController
+import androidx.navigation.fragment.NavHostFragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -22,18 +23,19 @@ import suzanasavic.github.com.android.postitapp.Constants.Companion.FIVE_MINUTES
 import suzanasavic.github.com.android.postitapp.FiveMinutesBroadcastReceiver
 import suzanasavic.github.com.android.postitapp.R
 import suzanasavic.github.com.android.postitapp.data.entities.Post
+import suzanasavic.github.com.android.postitapp.ui.post_details.PostDetailsFragment
 import java.lang.Exception
 import java.util.*
 
-class MainFragment : Fragment(), PostListAdapter.PostItemClickListener {
+class PostListFragment : Fragment(), PostListAdapter.PostItemClickListener {
 
     companion object {
-        fun newInstance() = MainFragment()
+        fun newInstance() = PostListFragment()
     }
 
     private lateinit var main: View
     private lateinit var recyclerView: RecyclerView
-    private lateinit var viewModel: MainViewModel
+    private lateinit var viewModel: PostListViewModel
     private lateinit var swipeToRefresh: SwipeRefreshLayout
 
     override fun onCreateView(
@@ -49,13 +51,14 @@ class MainFragment : Fragment(), PostListAdapter.PostItemClickListener {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+        activity?.title = getString(R.string.list)
         val app = App.instance
-        viewModel = ViewModelProvider(this, MainViewModelModelFactory(app)).get(MainViewModel::class.java)
+        viewModel = ViewModelProvider(this, PostListViewModelFactory(app)).get(PostListViewModel::class.java)
         viewModel.getAllPosts().observe(
             viewLifecycleOwner, { postList ->
                 if (postList.isEmpty()) {
                     val defaultValue = context?.getSharedPreferences(
-                        context!!.getString(R.string.preference_file_key),
+                        requireContext().getString(R.string.preference_file_key),
                         Context.MODE_PRIVATE)?.getBoolean(FIVE_MINUTES, false)
 
                    /*** In task description it is sad:  Posts should be stored locally with a validity time of 5 minutes.
@@ -118,7 +121,8 @@ class MainFragment : Fragment(), PostListAdapter.PostItemClickListener {
         alarmManager.setExact(AlarmManager.RTC_WAKEUP, calendar.timeInMillis, pendingIntent)
     }
 
-    override fun onPostItemClicked(post: Post) {
-        //todo navigate to fragment and fetch data
+    override fun onPostItemClicked(postView : View, post: Post) {
+        val action = PostListFragmentDirections.actionPostListFragmentToPostDetailsFragment(post)
+        NavHostFragment.findNavController(this).navigate(action)
     }
 }

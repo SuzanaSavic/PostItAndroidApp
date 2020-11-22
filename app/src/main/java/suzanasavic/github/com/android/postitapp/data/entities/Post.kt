@@ -11,6 +11,7 @@ import suzanasavic.github.com.android.postitapp.Constants.Companion.ID
 import suzanasavic.github.com.android.postitapp.Constants.Companion.TABLE_NAME
 import suzanasavic.github.com.android.postitapp.Constants.Companion.TITLE
 import suzanasavic.github.com.android.postitapp.Constants.Companion.USER_ID
+import java.io.Serializable
 
 @Dao
 @Entity(tableName = TABLE_NAME)
@@ -28,4 +29,4 @@ data class Post(
     @ColumnInfo(name = USER_ID)
     @SerializedName(USER_ID)
     val userId: Int
-)
+) : Serializable

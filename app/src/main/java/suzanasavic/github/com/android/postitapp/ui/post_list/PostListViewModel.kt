@@ -1,4 +1,4 @@
-package suzanasavic.github.com.android.postitapp.ui.main
+package suzanasavic.github.com.android.postitapp.ui.post_list
 
 import android.app.Application
 import androidx.lifecycle.LiveData
@@ -10,7 +10,7 @@ import suzanasavic.github.com.android.postitapp.data.network.ApiPostsRepository
 import java.util.*
 
 
-class MainViewModel(application: Application) : ViewModel() {
+class PostListViewModel(application: Application) : ViewModel() {
 
     private lateinit var posts: ArrayList<Post>
     private val repository: DatabasePostsRepository = DatabasePostsRepository(application)

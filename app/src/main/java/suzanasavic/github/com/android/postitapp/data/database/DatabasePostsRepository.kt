@@ -28,5 +28,9 @@ class DatabasePostsRepository(applicationContext: Application) : BaseRepository 
         return postsDao.deleteAll()
     }
 
+    override fun deletePostWithId(id: Int) {
+        return postsDao.deletePostWithId(id)
+    }
+
 
 }

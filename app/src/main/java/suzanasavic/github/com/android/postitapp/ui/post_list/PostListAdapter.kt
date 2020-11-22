@@ -1,4 +1,4 @@
-package suzanasavic.github.com.android.postitapp.ui.main
+package suzanasavic.github.com.android.postitapp.ui.post_list
 
 import android.content.Context
 import android.view.LayoutInflater
@@ -36,7 +36,7 @@ class PostListAdapter(private val context: Context, private val postList: List<P
         holder.recyclerViewPostListItemBinding.post = postList[position]
         setAnimation(holder.itemView, position)
         holder.itemView.setOnClickListener {
-            postItemClickListener.onPostItemClicked(postList[position])
+            postItemClickListener.onPostItemClicked(holder.itemView, postList[position])
         }
     }
 
@@ -53,6 +53,6 @@ class PostListAdapter(private val context: Context, private val postList: List<P
     }
 
     interface PostItemClickListener {
-        fun onPostItemClicked(post: Post)
+        fun onPostItemClicked(post1: View, post: Post)
     }
 }

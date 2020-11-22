@@ -10,4 +10,5 @@ interface BaseRepository {
     fun addNewPosts(post: ArrayList<Post>)
     fun getAllPosts() : LiveData<List<Post>>
     fun deleteAllPosts()
+    fun deletePostWithId(id : Int)
 }

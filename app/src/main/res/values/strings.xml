@@ -2,4 +2,15 @@
     <string name="app_name">PostIt</string>
     <string name="preference_file_key">suzanasavic.github.com.android.postit.PREFERENCE_FILE_KEY</string>
     <string name="general_error_message">Error occurred.</string>
+    <string name="delete_post">Delete post</string>
+    <string name="back">Back</string>
+    <string name="title">Title</string>
+    <string name="body">Body</string>
+    <string name="name">Name</string>
+    <string name="email">Email</string>
+    <string name="details">Details</string>
+    <string name="list">List</string>
+    <string name="alert_title">Are you sure you want to delete this post?</string>
+    <string name="cancel">Cancel</string>
+    <string name="delete">Delete</string>
 </resources>

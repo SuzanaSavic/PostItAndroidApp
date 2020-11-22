@@ -6,9 +6,13 @@ import retrofit2.Retrofit
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
+import retrofit2.http.Path
 import suzanasavic.github.com.android.postitapp.App
 import suzanasavic.github.com.android.postitapp.Constants.Companion.POSTS
+import suzanasavic.github.com.android.postitapp.Constants.Companion.USERS
 import suzanasavic.github.com.android.postitapp.data.entities.Post
+import suzanasavic.github.com.android.postitapp.data.entities.User
+
 
 /**
  * Created by suzana.savic on 11/17/2020.
@@ -17,6 +21,9 @@ interface Api {
 
     @GET(POSTS)
     suspend fun getAllPosts() : Response<ArrayList<Post>>
+
+    @GET("$USERS{userId}")
+    suspend fun getUser(@Path("userId") userId: Int): Response<User>
 
     companion object {
         operator fun invoke(): Api {
@@ -29,5 +36,4 @@ interface Api {
                 .create(Api::class.java)
         }
     }
-
 }

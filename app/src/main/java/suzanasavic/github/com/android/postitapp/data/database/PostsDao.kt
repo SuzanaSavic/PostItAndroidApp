@@ -19,4 +19,7 @@ interface PostsDao {
 
     @Query("DELETE FROM posts")
     fun deleteAll()
+
+    @Query("DELETE FROM posts WHERE id = :id")
+    fun deletePostWithId(id: Int)
 }
