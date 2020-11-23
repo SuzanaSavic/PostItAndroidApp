@@ -47,7 +47,7 @@ class PostDetailsFragment: Fragment() {
                 binding.post = post
             }catch (e: Exception){
                 Snackbar.make(
-                    binding.main,
+                    binding.detailsMain,
                     getString(R.string.general_error_message),
                     Snackbar.LENGTH_LONG
                 ).show()
@@ -59,10 +59,10 @@ class PostDetailsFragment: Fragment() {
             context?.let { it1 ->
                 MaterialAlertDialogBuilder(it1)
                     .setTitle(resources.getString(R.string.alert_title))
-                    .setNegativeButton(resources.getString(R.string.cancel)) { dialog, which ->
+                    .setNegativeButton(resources.getString(R.string.cancel)) { dialog, _ ->
                         dialog.dismiss()
                     }
-                    .setPositiveButton(resources.getString(R.string.delete)) { dialog, which ->
+                    .setPositiveButton(resources.getString(R.string.delete)) { dialog, _ ->
                         viewModel.deletePost()
                         dialog.dismiss()
                         activity?.onBackPressed()
