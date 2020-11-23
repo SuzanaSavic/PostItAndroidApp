@@ -14,7 +14,7 @@ class PostListViewModel(application: Application) : ViewModel() {
 
     private lateinit var posts: ArrayList<Post>
     private val repository: DatabasePostsRepository = DatabasePostsRepository(application)
-    private lateinit var liveDataPosts: LiveData<List<Post>>
+    private var liveDataPosts: LiveData<List<Post>>
 
     init {
         liveDataPosts = getAllPosts()
