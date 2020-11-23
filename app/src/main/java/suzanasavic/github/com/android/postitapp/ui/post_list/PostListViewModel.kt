@@ -45,4 +45,9 @@ class PostListViewModel(application: Application) : ViewModel() {
         posts = liveData.value as ArrayList<Post>
         return posts
     }
+
+    //for testing
+    suspend fun fetchAllPostsForTest() : List<Post>{
+        return ApiPostsRepository().getPosts()
+    }
 }

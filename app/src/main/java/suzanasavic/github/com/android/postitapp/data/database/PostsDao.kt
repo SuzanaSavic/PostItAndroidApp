@@ -22,4 +22,12 @@ interface PostsDao {
 
     @Query("DELETE FROM posts WHERE id = :id")
     fun deletePostWithId(id: Int)
+
+
+    //for testing
+    @Insert
+    fun insert(post: Post)
+
+    @Query("SELECT * FROM posts WHERE title = :title")
+    fun findPostsByTitle(title: String) : List<Post>
 }
