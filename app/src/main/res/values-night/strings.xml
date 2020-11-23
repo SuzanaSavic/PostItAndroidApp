@@ -13,4 +13,7 @@
     <string name="alert_title">Are you sure you want to delete this post?</string>
     <string name="cancel">Cancel</string>
     <string name="delete">Delete</string>
+    <string name="welcome_message">Welcome to PostIt app</string>
+    <string name="welcome_info_message">Here is the list of posts. It will auto refresh after 5 minutes. If you want to do it manually, just swipe from top!</string>
+    <string name="ok">OK</string>
 </resources>

@@ -53,6 +53,6 @@ class PostListAdapter(private val context: Context, private val postList: List<P
     }
 
     interface PostItemClickListener {
-        fun onPostItemClicked(post1: View, post: Post)
+        fun onPostItemClicked(postView: View, post: Post)
     }
 }

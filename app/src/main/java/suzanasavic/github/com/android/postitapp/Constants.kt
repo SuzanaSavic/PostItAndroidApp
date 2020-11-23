@@ -14,7 +14,6 @@ class Constants {
         const val USER_ID = "userId"
         const val TABLE_NAME = "posts"
         const val POSTS_DATABASE = "posts_database"
-        const val FIVE_MINUTES = "five_minutes"
-        const val POST_KEY = "post_key"
+        const val FIRST_RUN = "first_run"
     }
 }
