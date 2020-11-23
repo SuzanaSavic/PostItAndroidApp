@@ -3,7 +3,6 @@ package suzanasavic.github.com.android.postitapp
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.navigation.findNavController
-import suzanasavic.github.com.android.postitapp.ui.post_list.PostListFragment
 
 class MainActivity : AppCompatActivity() {
 

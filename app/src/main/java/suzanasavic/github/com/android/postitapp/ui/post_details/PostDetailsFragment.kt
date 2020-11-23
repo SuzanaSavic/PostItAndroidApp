@@ -1,11 +1,13 @@
 package suzanasavic.github.com.android.postitapp.ui.post_details
 
-import android.content.ClipData.Item
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.View.GONE
 import android.view.ViewGroup
+import androidx.appcompat.app.ActionBar
+import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -15,12 +17,10 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.launch
 import suzanasavic.github.com.android.postitapp.App
-import suzanasavic.github.com.android.postitapp.Constants.Companion.POST_KEY
 import suzanasavic.github.com.android.postitapp.R
 import suzanasavic.github.com.android.postitapp.data.entities.Post
 import suzanasavic.github.com.android.postitapp.data.entities.User
 import suzanasavic.github.com.android.postitapp.databinding.PostDetailsFragmentBinding
-import java.lang.Exception
 
 
 class PostDetailsFragment: Fragment() {
@@ -46,11 +46,14 @@ class PostDetailsFragment: Fragment() {
                 binding.user = user
                 binding.post = post
             }catch (e: Exception){
-                Snackbar.make(binding.main, getString(R.string.general_error_message), Snackbar.LENGTH_LONG).show()
+                Snackbar.make(
+                    binding.main,
+                    getString(R.string.general_error_message),
+                    Snackbar.LENGTH_LONG
+                ).show()
                 binding.progressBar.visibility = GONE
             }
         }
-        binding.btnBack.setOnClickListener { activity?.onBackPressed() }
         binding.btnDeletePost.setOnClickListener {
 
             context?.let { it1 ->
@@ -69,5 +72,29 @@ class PostDetailsFragment: Fragment() {
         }
         activity?.title = getString(R.string.details)
         return binding.root
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            android.R.id.home -> {
+                activity?.onBackPressed()
+                return true
+            }
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
+    override fun onResume() {
+        val actionBar: ActionBar? = (activity as AppCompatActivity).supportActionBar
+        actionBar?.setDisplayHomeAsUpEnabled(true)
+        actionBar?.setDisplayShowHomeEnabled(true)
+        super.onResume()
+    }
+
+    override fun onStop() {
+        val actionBar: ActionBar? = (activity as AppCompatActivity).supportActionBar
+        actionBar?.setDisplayHomeAsUpEnabled(false)
+        actionBar?.setDisplayShowHomeEnabled(false)
+        super.onStop()
     }
 }
